@@ -1,5 +1,9 @@
 // JavaScript BST
 
+const {
+    notEqual
+} = require("assert");
+
 
 class Node {
     constructor(data, left = null, right = null) {
@@ -67,6 +71,66 @@ class BST {
             current = current.right;
         }
         return current.data;
+    }
+
+    find(data) {
+        let current = this.root;
+
+        while (current.data !== data) {
+            if (data < current.data) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+            if (current === null) {
+                return null;
+            }
+        }
+        return current;
+    }
+
+    remove(data) {
+        const removeNode = function (node, data) {
+            if (node == null) {
+                return null;
+            }
+
+            if (data == node.data) {
+                //no children
+                if (node.left == null && node.right == null) {
+                    return null;
+                }
+
+                //only right child
+                if (node.left == null) {
+                    return node.right;
+                }
+
+                //only left child
+                if (node.right == null) {
+                    return node.left;
+                }
+
+                //node has two children
+                var tempNode = node.right;
+
+                while (tempNode.left !== null) {
+                    tempNode = tempNode.left;
+                }
+
+                node.data = tempNode.data;
+                node.right = removeNode(node.right, tempNode.data);
+                return node;
+
+            } else if (data < node.data) {
+                node.left = removeNode(node.right, data);
+                return node;
+            } else {
+                node.right = removeNode(node.right, data);
+                return node;
+            }
+        }
+        this.root = removeNode(this.root, data);
     }
 
 }
